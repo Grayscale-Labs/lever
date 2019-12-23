@@ -20,6 +20,14 @@ module Lever
       get_resource('/candidates', Lever::Candidate, id)
     end
 
+    def add_note(candidate_id, body)
+      post_resource("/candidates/#{candidate_id}/notes", { value: body })
+    end
+
+    def post_resource(path, body)
+      response = self.class.post(path, @options.merge({ body: body }))
+    end
+
     def get_resource(base_path, objekt, id = nil)
       path = id.nil? ? base_path : "#{base_path}/#{id}"
 
