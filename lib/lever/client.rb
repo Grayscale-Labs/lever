@@ -1,14 +1,20 @@
 require 'httparty'
 
 # TODO: Add pagination (lever limits to 100)
-#     : Add configurable base URL
 
 module Lever
   class Client
     include HTTParty
-    base_uri 'https://api.sandbox.lever.co/v1'
   
-    def initialize(token)
+    attr_accessor :base_uri
+
+    def initialize(token, options = {})
+      if options[:sandbox]
+        @base_uri = 'https://api.sandbox.lever.co/v1'
+      else
+        @base_uri = 'https://api.lever.co/v1'
+      end
+      
       @options = { basic_auth: { username: token } }
     end
     
@@ -25,13 +31,15 @@ module Lever
     end
 
     def post_resource(path, body)
-      response = self.class.post(path, @options.merge({ body: body }))
+      response = self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
+
+      response.parsed_response
     end
 
     def get_resource(base_path, objekt, id = nil)
       path = id.nil? ? base_path : "#{base_path}/#{id}"
 
-      response = self.class.get(path, @options)
+      response = self.class.get("#{base_uri}#{path}", @options)
       if response.success?
         if id
           objekt.new(response.parsed_response.dig('data'))
