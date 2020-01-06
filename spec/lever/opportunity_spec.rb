@@ -1,4 +1,4 @@
-RSpec.describe Lever::User do
+RSpec.describe Lever::Opportunity do
   describe '#initialize' do
     it "works" do
       parsed_response = {
@@ -65,8 +65,8 @@ RSpec.describe Lever::User do
         "dataProtection": nil
       }
 
-      candidate = Lever::Candidate.new(parsed_response)
-      expect(candidate.name).to eql("Tony Stark")
+      opportunity = Lever::Opportunity.new(parsed_response)
+      expect(opportunity.name).to eql("Tony Stark")
     end
   end
 end

@@ -1,7 +1,7 @@
 require "lever/version"
 require "lever/client"
 require "lever/user"
-require "lever/candidate"
+require "lever/opportunity"
 
 module Lever
 end

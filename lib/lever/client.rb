@@ -22,12 +22,12 @@ module Lever
       get_resource('/users', Lever::User, id)
     end
 
-    def candidates(id = nil)
-      get_resource('/candidates', Lever::Candidate, id)
+    def opportunities(id = nil)
+      get_resource('/opportunities', Lever::Opportunity, id)
     end
 
-    def add_note(candidate_id, body)
-      post_resource("/candidates/#{candidate_id}/notes", { value: body })
+    def add_note(opportunity_id, body)
+      post_resource("/opportunities/#{opportunity_id}/notes", { value: body })
     end
 
     def post_resource(path, body)

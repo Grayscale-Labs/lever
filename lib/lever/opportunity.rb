@@ -1,7 +1,7 @@
 require 'hashie'
 
 module Lever
-  class Candidate < Hashie::Trash
+  class Opportunity < Hashie::Trash
     include Hashie::Extensions::IndifferentAccess
   
     property :id
