@@ -23,7 +23,11 @@ module Lever
     end
 
     def opportunities(id = nil)
-      get_resource('/opportunities', Lever::Opportunity, id)
+      get_resource('/opportunities', Lever::Opportunity, id, id ? { expand: 'applications' } : {})
+    end
+
+    def postings(id = nil)
+      get_resource('/postings', Lever::Posting, id)
     end
 
     def add_note(opportunity_id, body)
@@ -36,16 +40,18 @@ module Lever
       response.parsed_response
     end
 
-    def get_resource(base_path, objekt, id = nil)
+    def get_resource(base_path, objekt, id = nil, add_query = {})
       path = id.nil? ? base_path : "#{base_path}/#{id}"
 
-      response = self.class.get("#{base_uri}#{path}", @options)
+      response = self.class.get("#{base_uri}#{path}", @options.merge({ query: add_query }))
       if response.success?
+        include_properties = { client: self }
+
         if id
-          objekt.new(response.parsed_response.dig('data'))
+          objekt.new(response.parsed_response.dig('data').merge(include_properties))
         else
           response.parsed_response.dig('data').map do |hash|
-            objekt.new(hash)
+            objekt.new(hash.merge(include_properties))
           end
         end
       end

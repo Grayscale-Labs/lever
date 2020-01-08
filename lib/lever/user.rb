@@ -1,9 +1,5 @@
-require 'hashie'
-
 module Lever
-  class User < Hashie::Trash
-    include Hashie::Extensions::IndifferentAccess
-  
+  class User < Base
     property :id
     property :name
     property :username

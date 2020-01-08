@@ -14,55 +14,8 @@ RSpec.describe Lever::Client do
   end
 
   describe '#opportunities' do
-    let(:single_result_body) {
-      {
-        "id": "8bd304b4-b8e7-41cd-bca8-607be2544325",
-        "name": "Steve Rodgers",
-        "contact": "9a2c1f5f-8720-488a-a61d-207a78db37b9",
-        "headline": "Avengers",
-        "stage": "lead-new",
-        "location": "",
-        "phones": [],
-        "emails": [],
-        "links": [],
-        "archived": nil,
-        "tags": [
-          "Super Hero",
-        ],
-        "sources": [
-          "Added manually"
-        ],
-        "stageChanges": [
-          {
-            "toStageId": "lead-new",
-            "toStageIndex": 0,
-            "updatedAt": 1578336284202,
-            "userId": "c895b832-820c-4f93-b873-23d5c8443acd"
-          }
-        ],
-        "origin": "sourced",
-        "owner": "c895b832-820c-4f93-b873-23d5c8443acd",
-        "followers": [
-          "c895b832-820c-4f93-b873-23d5c8443acd"
-        ],
-        "applications": [
-          "73731536-438d-4255-8960-d013ffd85db3"
-        ],
-        "createdAt": 1578336284202,
-        "lastInteractionAt": 1578336284204,
-        "lastAdvancedAt": 1578336284202,
-        "snoozedUntil": nil,
-        "urls": {
-          "list": "https://hire.sandbox.lever.co/opportunities",
-          "show": "https://hire.sandbox.lever.co/opportunities/8bd304b4-b8e7-41cd-bca8-607be2544325"
-        },
-        "isAnonymized": false,
-        "dataProtection": nil
-      }
-    }
-
     before do
-      @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011").
+      @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications").
          with(
            headers: {
        	    'Accept'=>'*/*',
@@ -70,7 +23,7 @@ RSpec.describe Lever::Client do
        	    'Authorization'=>'Basic MTIzNDo=',
        	    'User-Agent'=>'Ruby'
            }
-          ).to_return(status: 200, body: { 'data': single_result_body }.to_json, headers: { 'Content-Type' => 'application/json' } )
+          ).to_return(status: 200, body: { 'data': Payloads::OPPORTUNITY }.to_json, headers: { 'Content-Type' => 'application/json' } )
 
       @multiple_request = stub_request(:get, "https://api.lever.co/v1/opportunities").
         with(
@@ -80,7 +33,7 @@ RSpec.describe Lever::Client do
             'Authorization'=>'Basic MTIzNDo=',
             'User-Agent'=>'Ruby'
           }
-          ).to_return(status: 200, body: { 'data': [single_result_body, single_result_body] }.to_json, headers: { 'Content-Type' => 'application/json' } )
+          ).to_return(status: 200, body: { 'data': [Payloads::OPPORTUNITY, Payloads::OPPORTUNITY] }.to_json, headers: { 'Content-Type' => 'application/json' } )
     end
 
     context 'when single ID provided' do

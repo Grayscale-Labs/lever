@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "lever"
+require "support/payloads"
 
 require 'webmock/rspec'
 WebMock.disable_net_connect!(allow_localhost: true)

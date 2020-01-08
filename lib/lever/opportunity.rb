@@ -1,8 +1,5 @@
-require 'hashie'
-
 module Lever
-  class Opportunity < Hashie::Trash
-    include Hashie::Extensions::IndifferentAccess
+  class Opportunity < Base
   
     property :id
     property :name
@@ -20,7 +17,7 @@ module Lever
     property :origin
     property :owner
     property :followers
-    property :applications
+    property :applications, transform_with: lambda { |values| values.map { |application_data| Lever::Application.new(application_data) } }
     property :created_at, from: :createdAt
     property :last_interaction_at, from: :lastInteractionAt
     property :last_advanced_at, from: :lastAdvancedAt

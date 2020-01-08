@@ -1,8 +1,15 @@
 # Lever
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/lever`. To experiment with that code, run `bin/console` for an interactive prompt.
+Unoffical gem to access the [Lever](https://www.lever.co/) v1 API.
 
-TODO: Delete this and the text above, and describe your gem
+From Lever:
+> The Lever API lets you build a variety of applications and scripts to create candidates, integrate Lever with other business platforms (HRIS, HRMS, etc.), and show Lever data outside of the app.
+
+NOTE: This is NOT for the Postings API
+
+From Lever:
+> Hoping to build an integration with your public job site? You're probably looking for the Postings API.
+
 
 ## Installation
 
@@ -22,7 +29,31 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+token = '1234'
+client = Lever::Client.new(token)
+```
+
+if you're using a Lever sandbox, specify the sandbox option (uses a different URL)
+
+```ruby
+client = Lever::Client.new(token, { sandbox: true })
+```
+
+then, use the resource name as a method, and supply the ID to get a singular object.
+
+```ruby
+client.opportunities # list opportunities
+client.opportunities(opportunity_id) # single opportunity
+```
+
+supported resources:
+- Postings (`Lever::Posting`)
+- Opportunities (`Lever::Opportunity`)
+- Users (`Lever::User`)
+
+additionally supported objects:
+- Applications (expanded via Opportunities resource) (`Lever::Application`)
 
 ## Development
 
