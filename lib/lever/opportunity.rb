@@ -1,6 +1,5 @@
 module Lever
   class Opportunity < Base
-  
     property :id
     property :name
     property :contact
@@ -17,7 +16,7 @@ module Lever
     property :origin
     property :owner
     property :followers
-    property :applications, transform_with: lambda { |values| values.map { |application_data| Lever::Application.new(application_data) } }
+    property :application_data, from: :applications
     property :created_at, from: :createdAt
     property :last_interaction_at, from: :lastInteractionAt
     property :last_advanced_at, from: :lastAdvancedAt
@@ -25,5 +24,9 @@ module Lever
     property :urls
     property :is_anonymized, from: :isAnonymized
     property :data_protection, from: :dataProtection
+
+    def applications
+      application_data.map { |data| Lever::Application.new(data.merge(client: client)) }
+    end
   end
 end
