@@ -44,7 +44,7 @@ then, use the resource name as a method, and supply the ID to get a singular obj
 
 ```ruby
 client.opportunities # list opportunities
-client.opportunities(opportunity_id) # single opportunity
+client.opportunities(id: opportunity_id) # single opportunity
 ```
 
 supported resources:
@@ -54,6 +54,12 @@ supported resources:
 
 additionally supported objects:
 - Applications (expanded via Opportunities resource) (`Lever::Application`)
+
+Error handling can be done via `on_error`
+
+```ruby
+client.opportunities(id: opportunity_id, on_error: ->(response) { puts response }) # response is the HTTParty response
+```
 
 ## Development
 
