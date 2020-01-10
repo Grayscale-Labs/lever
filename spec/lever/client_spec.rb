@@ -38,7 +38,7 @@ RSpec.describe Lever::Client do
 
     context 'when single ID provided' do
       it 'retrieves one record as an object' do
-        expect(client.opportunities('1234-5678-91011')).to be_a(Lever::Opportunity)
+        expect(client.opportunities(id: '1234-5678-91011')).to be_a(Lever::Opportunity)
         expect(@single_request).to have_been_requested
       end
     end
@@ -47,6 +47,24 @@ RSpec.describe Lever::Client do
       it 'retreives a set of records' do
         expect(client.opportunities).to all(be_a(Lever::Opportunity))
         expect(@multiple_request).to have_been_requested
+      end
+    end
+
+    context 'on error' do
+      it 'runs the block' do
+        @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stages").
+         with(
+           headers: {
+       	    'Accept'=>'*/*',
+       	    'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+       	    'Authorization'=>'Basic MTIzNDo=',
+       	    'User-Agent'=>'Ruby'
+           }
+          ).to_return(status: 403, body: { 'data': '' }.to_json, headers: { 'Content-Type' => 'application/json' } )
+
+        @blah = false
+        client.opportunities(id: '1234-5678-91011', on_error: ->(response) { @blah = true })
+        expect(@blah).to eql(true)
       end
     end
   end

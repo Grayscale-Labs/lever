@@ -18,16 +18,21 @@ module Lever
       @options = { basic_auth: { username: token } }
     end
     
-    def users(id = nil)
-      get_resource('/users', Lever::User, id)
+    def users(id: nil, on_error: nil)
+      get_resource('/users', Lever::User, id, { on_error: on_error })
     end
 
-    def opportunities(id = nil)
-      get_resource('/opportunities', Lever::Opportunity, id, id ? 'expand=applications&expand=stages' : {})
+    def opportunities(id: nil, on_error: nil)
+      get_resource(
+        '/opportunities',
+        Lever::Opportunity,
+        id,
+        { query: id ? 'expand=applications&expand=stages' : {}, on_error: on_error }
+      )
     end
 
-    def postings(id = nil)
-      get_resource('/postings', Lever::Posting, id)
+    def postings(id: nil, on_error: nil)
+      get_resource('/postings', Lever::Posting, id, { on_error: on_error })
     end
 
     def add_note(opportunity_id, body)
@@ -40,8 +45,11 @@ module Lever
       response.parsed_response
     end
 
-    def get_resource(base_path, objekt, id = nil, add_query = {})
+    def get_resource(base_path, objekt, id = nil, options = {})
       path = id.nil? ? base_path : "#{base_path}/#{id}"
+
+      add_query = options[:query]
+      on_error = options[:on_error]
 
       response = self.class.get("#{base_uri}#{path}", @options.merge({ query: add_query }))
       if response.success?
@@ -54,6 +62,8 @@ module Lever
             objekt.new(hash.merge(include_properties))
           end
         end
+      else
+        on_error&.call(response)
       end
     end
   end

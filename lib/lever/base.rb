@@ -6,7 +6,7 @@ module Lever
     property :client
 
     def fetch(method, id)
-      client.send(method.to_sym, id)
+      client.send(method.to_sym, id: id)
     end
   end
 end
