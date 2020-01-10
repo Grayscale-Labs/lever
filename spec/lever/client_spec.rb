@@ -15,7 +15,7 @@ RSpec.describe Lever::Client do
 
   describe '#opportunities' do
     before do
-      @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stages").
+      @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").
          with(
            headers: {
        	    'Accept'=>'*/*',
@@ -52,7 +52,7 @@ RSpec.describe Lever::Client do
 
     context 'on error' do
       it 'runs the block' do
-        @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stages").
+        @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").
          with(
            headers: {
        	    'Accept'=>'*/*',

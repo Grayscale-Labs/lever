@@ -27,7 +27,7 @@ module Lever
         '/opportunities',
         Lever::Opportunity,
         id,
-        { query: id ? 'expand=applications&expand=stages' : {}, on_error: on_error }
+        { query: id ? 'expand=applications&expand=stage' : {}, on_error: on_error }
       )
     end
 
