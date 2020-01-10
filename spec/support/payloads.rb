@@ -63,7 +63,10 @@ module Payloads
     "name": "Tony Stark",
     "contact": "34a0feff-d892-48ef-b908-a0b54fe09fe1",
     "headline": "",
-    "stage": "lead-new",
+    "stage": {
+      "id": "lead-new",
+      "text": "New lead"
+    },
     "location": "",
     "phones": [
       {

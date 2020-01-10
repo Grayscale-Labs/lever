@@ -5,7 +5,7 @@ require 'httparty'
 module Lever
   class Client
     include HTTParty
-  
+
     attr_accessor :base_uri
 
     def initialize(token, options = {})
@@ -23,7 +23,7 @@ module Lever
     end
 
     def opportunities(id = nil)
-      get_resource('/opportunities', Lever::Opportunity, id, id ? { expand: 'applications' } : {})
+      get_resource('/opportunities', Lever::Opportunity, id, id ? 'expand=applications&expand=stages' : {})
     end
 
     def postings(id = nil)

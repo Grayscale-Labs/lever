@@ -4,7 +4,8 @@ module Lever
     property :name
     property :contact
     property :headline
-    property :stage
+    property :stage_id, from: :stage, transform_with: ->(value) { value && value['id'] }
+    property :stage_name, from: :stage, transform_with: ->(value) { value && value['text'] }
     property :location
     property :phones
     property :emails
