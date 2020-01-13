@@ -13,6 +13,33 @@ RSpec.describe Lever::Client do
     end
   end
 
+  describe '#stages' do
+
+    before do
+      @single_request = stub_request(:get, "https://api.lever.co/v1/stages/1234").
+        with(
+          headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization'=>'Basic MTIzNDo=',
+          'User-Agent'=>'Ruby'
+          }).
+        to_return(status: 200, body: { "data": Payloads::STAGE }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+    end
+
+    context "when singular record" do
+      it 'returns a stage object' do
+        expect(client.stages(id: "1234")).to be_a(Lever::Stage)
+      end
+
+      it 'executes the request' do
+        client.stages(id: "1234")
+        expect(@single_request).to have_been_requested
+      end
+    end
+  end
+
   describe '#opportunities' do
     before do
       @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").

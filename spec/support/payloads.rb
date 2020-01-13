@@ -58,15 +58,16 @@ module Payloads
     "updatedAt": 1578336004355
   }
 
+  STAGE = {
+    "id": "lead-new",
+    "text": "New lead"
+  }
   OPPORTUNITY = {
     "id": "74fd168f-1505-4d2e-afd4-6daf29bbc3a9",
     "name": "Tony Stark",
     "contact": "34a0feff-d892-48ef-b908-a0b54fe09fe1",
     "headline": "",
-    "stage": {
-      "id": "lead-new",
-      "text": "New lead"
-    },
+    "stage": STAGE,
     "location": "",
     "phones": [
       {

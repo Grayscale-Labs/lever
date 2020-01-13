@@ -31,6 +31,10 @@ module Lever
       )
     end
 
+    def stages(id: nil, on_error: nil)
+      get_resource('/stages', Lever::Stage, id, { on_error: on_error })
+    end
+
     def postings(id: nil, on_error: nil)
       get_resource('/postings', Lever::Posting, id, { on_error: on_error })
     end

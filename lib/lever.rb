@@ -3,6 +3,7 @@ require "lever/client"
 
 require "lever/base"
 require "lever/user"
+require "lever/stage"
 require "lever/opportunity"
 require "lever/posting"
 require "lever/application"
