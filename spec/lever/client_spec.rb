@@ -77,6 +77,26 @@ RSpec.describe Lever::Client do
       end
     end
 
+    context 'when filtering by contact_id' do
+      before do
+        @multiple_request_contact = stub_request(:get, "https://api.lever.co/v1/opportunities?contact_id=4567").
+        with(
+          headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization'=>'Basic MTIzNDo=',
+            'User-Agent'=>'Ruby'
+          }
+          ).to_return(status: 200, body: { 'data': [Payloads::OPPORTUNITY, Payloads::OPPORTUNITY] }.to_json, headers: { 'Content-Type' => 'application/json' } )
+
+      end
+
+      it 'retrieves opps for that contact' do
+        expect(client.opportunities(contact_id: '4567')).to all(be_a(Lever::Opportunity))
+        expect(@multiple_request_contact).to have_been_requested
+      end
+    end
+
     context 'on error' do
       it 'runs the block' do
         @single_request = stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").

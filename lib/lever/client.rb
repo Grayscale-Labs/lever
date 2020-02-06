@@ -22,12 +22,18 @@ module Lever
       get_resource('/users', Lever::User, id, { on_error: on_error })
     end
 
-    def opportunities(id: nil, on_error: nil)
+    def opportunities(id: nil, contact_id: nil, on_error: nil)
+      query = if id
+        'expand=applications&expand=stage'
+      else
+        contact_id ? { contact_id: contact_id } : {}
+      end
+
       get_resource(
         '/opportunities',
         Lever::Opportunity,
         id,
-        { query: id ? 'expand=applications&expand=stage' : {}, on_error: on_error }
+        { query: query, on_error: on_error }
       )
     end
 
