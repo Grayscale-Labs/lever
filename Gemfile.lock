@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lever (0.1.1)
+    lever (0.1.2)
       hashie
       httparty
 

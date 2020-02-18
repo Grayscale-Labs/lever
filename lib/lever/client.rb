@@ -7,6 +7,7 @@ module Lever
     include HTTParty
 
     attr_accessor :base_uri
+    attr_reader :options
 
     def initialize(token, options = {})
       if options[:sandbox]
@@ -16,6 +17,10 @@ module Lever
       end
       
       @options = { basic_auth: { username: token } }
+
+      if options[:headers]
+        @options[:headers] = options[:headers]
+      end
     end
     
     def users(id: nil, on_error: nil)

@@ -11,6 +11,14 @@ RSpec.describe Lever::Client do
     it 'sets the right base_uri' do
       expect(client.base_uri).to eql('https://api.lever.co/v1')
     end
+
+    context 'when headers provided' do
+      it 'sets them in the options' do
+        client = described_class.new('1234', { headers: { 'Extra-Header' => 'Header-Value' }})
+
+        expect(client.options[:headers]).to include({ 'Extra-Header' => 'Header-Value' })
+      end
+    end
   end
 
   describe '#stages' do
