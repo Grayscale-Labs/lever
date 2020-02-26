@@ -2,6 +2,7 @@ require 'hashie'
 
 module Lever
   class Base < Hashie::Trash
+    include Hashie::Extensions::IgnoreUndeclared
     include Hashie::Extensions::IndifferentAccess
     property :client
 
