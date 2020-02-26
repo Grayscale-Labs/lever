@@ -4,8 +4,7 @@ module Lever
     property :name
     property :contact
     property :headline
-    property :stage_id, from: :stage, transform_with: ->(value) { value && value['id'] }
-    property :stage_name, from: :stage, transform_with: ->(value) { value && value['text'] }
+    property :stage
     property :location
     property :phones
     property :emails
@@ -28,6 +27,14 @@ module Lever
 
     def applications
       application_data.map { |data| Lever::Application.new(data.merge(client: client)) }
+    end
+
+    def stage_id
+      stage && stage['id']
+    end
+
+    def stage_name
+      stage && stage['text']
     end
   end
 end
