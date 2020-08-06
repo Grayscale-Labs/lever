@@ -7,6 +7,7 @@ require "lever/stage"
 require "lever/opportunity"
 require "lever/posting"
 require "lever/application"
+require "lever/interview"
 
 module Lever
 end
