@@ -17,7 +17,7 @@ module Lever
     property :owner
     property :followers
     property :application_data, from: :applications
-    property :created_at, from: :createdAt
+    property :created_at, from: :createdAt, with: ->(value) { Time.at(value / 1000.to_f) }
     property :last_interaction_at, from: :lastInteractionAt
     property :last_advanced_at, from: :lastAdvancedAt
     property :snoozed_until, from: :snoozedUntil
@@ -27,6 +27,18 @@ module Lever
 
     def applications
       application_data.map { |data| Lever::Application.new(data.merge(client: client)) }
+    end
+
+    def archived?
+      !(archived.nil? || archived.empty?)
+    end
+
+    def hired?
+      archived? && hired_archive_reason?(archived.dig('reason'))
+    end
+
+    def rejected?
+      archived? && !hired_archive_reason?(archived.dig('reason'))
     end
 
     def stage_id

@@ -8,6 +8,7 @@ require "lever/opportunity"
 require "lever/posting"
 require "lever/application"
 require "lever/interview"
+require "lever/archive_reason"
 
 module Lever
 end

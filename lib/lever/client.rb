@@ -49,6 +49,14 @@ module Lever
     def postings(id: nil, on_error: nil)
       get_resource('/postings', Lever::Posting, id, { on_error: on_error })
     end
+    
+    def archive_reasons(id: nil, on_error: nil)
+      get_resource('/archive_reasons', Lever::ArchiveReason, id, { on_error: on_error })
+    end
+
+    def hired_archive_reasons(on_error: nil)
+      get_resource('/archive_reasons', Lever::ArchiveReason, nil, { on_error: on_error, query: { type: 'hired' } })
+    end
 
     def add_note(opportunity_id, body)
       post_resource("/opportunities/#{opportunity_id}/notes", { value: body })

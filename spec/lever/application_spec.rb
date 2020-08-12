@@ -1,27 +1,27 @@
 RSpec.describe Lever::Application do
-  let(:application) { Lever::Application.new(Payloads::APPLICATION) }
+  # let(:application) { Lever::Application.new(Payloads::APPLICATION) }
+  let(:application_response) { build(:lever_application_response) }
+  let(:application) { Lever::Application.new(application_response) }
 
   describe '#initialize' do
-    it "works" do
-      expect(application.type).to eql("user")
+    it "sets the type" do
+      expect(application.type).to eql(application_response['type'])
+    end
+
+    it 'sets the id' do
+      expect(application.id).to eql(application_response['id'])
+    end
+
+    it 'sets the posting_id' do
+      expect(application.posting_id).to eql(application_response['posting'])
     end
   end
 
   describe '#posting' do
+    let!(:posting_response) { build(:lever_posting_response, stub_request: true) }
     it 'grabs the posting from the api' do
-      request = stub_request(:get, "https://api.lever.co/v1/postings/685dd0f3-6b95-4bc9-ae32-658b808900ca").
-        with(
-          headers: {
-          'Accept'=>'*/*',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'Basic MTIzNDo=',
-          'User-Agent'=>'Ruby'
-          }).
-        to_return(status: 200, body: { 'data': Payloads::POSTING }.to_json, headers: { 'Content-Type' => 'application/json' })
-
       application.client = Lever::Client.new('1234')
       expect(application.posting).to be_a(Lever::Posting)
-      expect(request).to have_been_requested
     end
   end
 end

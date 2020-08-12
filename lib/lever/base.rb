@@ -9,5 +9,9 @@ module Lever
     def fetch(method, id)
       client.send(method.to_sym, id: id)
     end
+
+    def hired_archive_reason?(reason_id)
+      client.hired_archive_reasons.map(&:id).include?(reason_id)
+    end
   end
 end
