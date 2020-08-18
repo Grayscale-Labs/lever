@@ -1,5 +1,4 @@
 RSpec.describe Lever::Application do
-  # let(:application) { Lever::Application.new(Payloads::APPLICATION) }
   let(:application_response) { build(:lever_application_response) }
   let(:application) { Lever::Application.new(application_response) }
 

@@ -42,6 +42,10 @@ module Lever
       )
     end
 
+    def interviews(opportunity_id:, id: nil)
+      get_resource("/opportunities/#{opportunity_id}/interviews", Lever::Interview, id)
+    end
+
     def stages(id: nil, on_error: nil)
       get_resource('/stages', Lever::Stage, id, { on_error: on_error })
     end

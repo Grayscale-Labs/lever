@@ -81,4 +81,21 @@ RSpec.describe Lever::Client do
     end
   end
 
+  describe '#interviews' do
+    context 'when ID provided' do
+      let!(:interview_response) { build(:lever_interview_response, id: '1234-5678-910-11', opportunity_id: 'oppo-1234', stub_request: true) }
+      subject { client.interviews(id: '1234-5678-910-11', opportunity_id: 'oppo-1234' ) }
+      
+      it { is_expected.to be_a(Lever::Interview) }
+    end
+    
+    context 'when no ID provided' do
+      let!(:lever_interview_responses) { build(:lever_interview_responses, opportunity_id: 'oppo-1234', stub_request: true) }
+      subject { client.interviews(opportunity_id: 'oppo-1234') }
+
+      it { is_expected.to be_a(Array) }
+      it { is_expected.to all(be_a(Lever::Interview)) }
+    end
+  end
+
 end

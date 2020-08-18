@@ -1,5 +1,5 @@
 RSpec.describe Lever::Interview do
-  let(:interview) { described_class.new(Payloads::INTERVIEW) }
+  let(:interview) { described_class.new(build(:lever_interview_response)) }
   
   describe '#initialize' do
     it "works" do
@@ -37,7 +37,7 @@ RSpec.describe Lever::Interview do
       it { is_expected.to be_nil }
     end
     context 'when not nil' do
-      let(:interview) { described_class.new(Payloads::CANCELED_INTERVIEW) }
+      let(:interview) { described_class.new(build(:lever_interview_response, :canceled)) }
 
       it { is_expected.to be_a(Time) }
     end
