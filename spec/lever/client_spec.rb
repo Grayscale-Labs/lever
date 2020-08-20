@@ -69,14 +69,84 @@ RSpec.describe Lever::Client do
       end
     end
 
-    context 'on error' do
-      it 'runs the block' do
-        stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").
-          to_return(status: 403, body: { 'data': '' }.to_json, headers: { 'Content-Type' => 'application/json' } )
+    context 'when not successful' do
+      context 'when error block' do
+        it 'runs the block' do
+          stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").
+            to_return(status: 403, body: { 'data': '' }.to_json, headers: { 'Content-Type' => 'application/json' } )
+  
+          @blah = false
+          client.opportunities(id: '1234-5678-91011', on_error: ->(response) { @blah = true })
+          expect(@blah).to eql(true)
+        end
+      end
 
-        @blah = false
-        client.opportunities(id: '1234-5678-91011', on_error: ->(response) { @blah = true })
-        expect(@blah).to eql(true)
+      context 'when no error block' do
+        let(:response_double) { instance_double(HTTParty::Response, body: 'response_body', code: code) }
+        before do
+          expect(client.class).to receive(:get).and_return(response_double)
+          expect(response_double).to receive(:success?)
+        end
+
+        # context 'when 301' do
+        #   let(:code) { 301 }
+        #   it 'does something' do
+        #     client.opportunities
+        #   end
+        # end
+
+        context 'when 400' do
+          let(:code) { 400 }
+          it 'raises InvalidRequestError' do
+            expect { client.opportunities }.to raise_error(Lever::InvalidRequestError)
+          end
+        end
+
+        context 'when 401' do
+          let(:code) { 401 }
+          it 'raises UnauthorizedError' do
+            expect { client.opportunities }.to raise_error(Lever::UnauthorizedError)
+          end
+        end
+
+        context 'when 403' do
+          let(:code) { 403 }
+          it 'raises ForbiddenError' do
+            expect { client.opportunities }.to raise_error(Lever::ForbiddenError)
+          end
+        end
+
+        context 'when 404' do
+          let(:code) { 404 }
+          it 'raises NotFoundError' do
+            expect { client.opportunities }.to raise_error(Lever::NotFoundError)
+          end
+        end
+        context 'when 429' do
+          let(:code) { 429 }
+          it 'raises TooManyRequestsError' do
+            expect { client.opportunities }.to raise_error(Lever::TooManyRequestsError)
+          end
+        end
+        context 'when 500' do
+          let(:code) { 500 }
+          it 'raises ServerError' do
+            expect { client.opportunities }.to raise_error(Lever::ServerError)
+          end
+        end
+        context 'when 503' do
+          let(:code) { 503 }
+          it 'raises ServiceUnavailableError' do
+            expect { client.opportunities }.to raise_error(Lever::ServiceUnavailableError)
+          end
+        end
+
+        context 'when not listed' do
+          let(:code) { 999 }
+          it 'raises Error' do
+            expect { client.opportunities }.to raise_error(Lever::Error)
+          end
+        end
       end
     end
   end

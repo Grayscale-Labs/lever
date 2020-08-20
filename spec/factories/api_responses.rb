@@ -10,6 +10,7 @@ FactoryBot.define do
       api_base { 'https://api.lever.co/v1' }
       resource_path { raise "You must define the resource url in the factory" if stub_request }
       use_data { true }
+      status { 200 }
     end
 
     after(:build) do |api_response, evaluator|
@@ -20,7 +21,7 @@ FactoryBot.define do
         WebMock.
           stub_request(:get, url).
             to_return(
-              status: 200,
+              status: evaluator.status,
               body: response_body.to_json,
               headers: { 'Content-Type' => 'application/json' }
             )

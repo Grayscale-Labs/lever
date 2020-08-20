@@ -12,6 +12,8 @@ module Lever
 
     def hired_archive_reason?(reason_id)
       client.hired_archive_reasons.map(&:id).include?(reason_id)
+    rescue Lever::ForbiddenError
+      false
     end
   end
 end

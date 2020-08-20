@@ -90,8 +90,32 @@ module Lever
           end
         end
       else
-        on_error&.call(response)
+        if on_error
+          on_error.call(response)
+        else
+          error = case response.code
+                  when 400
+                    Lever::InvalidRequestError
+                  when 401
+                    Lever::UnauthorizedError
+                  when 403
+                    Lever::ForbiddenError
+                  when 404
+                    Lever::NotFoundError
+                  when 429
+                    Lever::TooManyRequestsError
+                  when 500
+                    Lever::ServerError
+                  when 503
+                    Lever::ServiceUnavailableError
+                  else
+                    Lever::Error
+                  end
+    
+          raise error.new(response.code, response.code)
+        end
       end
     end
   end
 end
+

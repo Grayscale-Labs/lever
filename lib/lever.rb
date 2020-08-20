@@ -1,5 +1,6 @@
 require "lever/version"
 require "lever/client"
+require "lever/error"
 
 require "lever/base"
 require "lever/user"
