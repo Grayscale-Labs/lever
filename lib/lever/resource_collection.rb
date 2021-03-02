@@ -4,6 +4,16 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/string/inflections'
 
 module Lever
+  # This class does lazy pagination, but otherwise quacks like an Array by delegating method calls to
+  #   its `hydrated_resources` internal Array.
+  #
+  # Lazy pagination allows for (e.g.):
+  #   `collection.each.with_index { |resource, i| puts resource.id; break if i == 0; }`
+  #
+  #   That ^^ will only request the first page, regardless of whether subsequent pages exist or not.
+  #
+  # Note, however, that if a non-Enum Array method is used (e.g. #[], #length) and full pagination hasn't been done yet,
+  #   pagination is first done to completion before delegating the method call to the internal Array.
   class ResourceCollection
     include Enumerable
 
@@ -31,6 +41,8 @@ module Lever
       end
     end
 
+    # Array#count is more efficient than Enum#count, so we want to utilize it if pagination has already been done to
+    #   completion
     def count(*args, &block)
       return super unless all_pages_requested?
 
