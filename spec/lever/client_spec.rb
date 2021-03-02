@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
+require 'active_support/core_ext/kernel/reporting'
+
 RSpec.describe Lever::Client do
   let(:client) { described_class.new('1234') }
-  
+
   describe '#initialize' do
     context 'when sandbox' do
       it 'sets the right base_uri' do
@@ -69,12 +73,79 @@ RSpec.describe Lever::Client do
       end
     end
 
+    context 'when given additional query_params', :vcr do
+      let(:limit) { 1 } # Use limit: 1 to limit data size + test pagination
+      let(:method_args) { { posting_id: 'space-explorer', limit: limit } }
+
+      let!(:opportunity_responses) {
+        [
+          build(:lever_opportunity_responses_for_posting_first_page, stub_request: true),
+          build(:lever_opportunity_responses_for_posting_last_page,  stub_request: true)
+        ]
+      }
+
+      subject(:opportunities) { client.opportunities(method_args) }
+
+      it 'returns a response' do
+        expect(opportunities).to_not be_nil
+      end
+
+      it 'returns an OpportunityCollection instance' do
+        expect(opportunities).to be_an_instance_of(Lever::OpportunityCollection)
+      end
+
+      it 'returns opportunity details' do
+        expect(opportunities.first).to respond_to(:application_data)
+      end
+
+      it 'iterates by utilizing pagination' do
+        expect(
+          opportunities.first(limit * 2).map(&:id)
+        ).to(
+          eq(opportunity_responses.map { |r| r['data'].first['id'] })
+        )
+      end
+
+      context do
+        before(:each) do
+          allow(Lever::Client).to receive(:get).and_return(double('success?': false, headers: {}, code: code))
+        end
+
+        context 'when rate-limiting encountered' do
+          let(:code) { 429 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { opportunities.first }
+          end
+        end
+
+        context 'when 500 encountered' do
+          let(:code) { 500 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { opportunities.first }
+          end
+        end
+
+        context 'when 503 encountered' do
+          let(:code) { 503 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { opportunities.first }
+          end
+        end
+      end
+    end
+
     context 'when not successful' do
       context 'when error block' do
         it 'runs the block' do
           stub_request(:get, "https://api.lever.co/v1/opportunities/1234-5678-91011?expand=applications&expand=stage").
             to_return(status: 403, body: { 'data': '' }.to_json, headers: { 'Content-Type' => 'application/json' } )
-  
+
           @blah = false
           client.opportunities(id: '1234-5678-91011', on_error: ->(response) { @blah = true })
           expect(@blah).to eql(true)
@@ -155,10 +226,10 @@ RSpec.describe Lever::Client do
     context 'when ID provided' do
       let!(:interview_response) { build(:lever_interview_response, id: '1234-5678-910-11', opportunity_id: 'oppo-1234', stub_request: true) }
       subject { client.interviews(id: '1234-5678-910-11', opportunity_id: 'oppo-1234' ) }
-      
+
       it { is_expected.to be_a(Lever::Interview) }
     end
-    
+
     context 'when no ID provided' do
       let!(:lever_interview_responses) { build(:lever_interview_responses, opportunity_id: 'oppo-1234', stub_request: true) }
       subject { client.interviews(opportunity_id: 'oppo-1234') }

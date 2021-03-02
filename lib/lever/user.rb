@@ -1,3 +1,5 @@
+require 'lever/base'
+
 module Lever
   class User < Base
     property :id

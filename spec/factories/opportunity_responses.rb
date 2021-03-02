@@ -100,4 +100,25 @@ FactoryBot.define do
 
     data { create_list(:lever_opportunity_response, 10) }
   end
+
+  factory :lever_opportunity_responses_for_posting_first_page, parent: :lever_api_response do
+    transient do
+      resource_path { 'opportunities?limit=1&posting_id=space-explorer' }
+      use_data { false }
+    end
+
+    data { create_list(:lever_opportunity_response, 1) }
+    add_attribute(:next) { 'one-million' }
+    hasNext { true }
+  end
+
+  factory :lever_opportunity_responses_for_posting_last_page, parent: :lever_api_response do
+    transient do
+      resource_path { 'opportunities?limit=1&posting_id=space-explorer&offset=one-million' }
+      use_data { false }
+    end
+
+    data { create_list(:lever_opportunity_response, 1) }
+    hasNext { false }
+  end
 end
