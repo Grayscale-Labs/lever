@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'lever/base'
+
 module Lever
   class Opportunity < Base
     property :id

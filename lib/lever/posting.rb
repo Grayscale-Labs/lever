@@ -1,5 +1,7 @@
+require 'lever/base'
+
 module Lever
-  class Posting < Base 
+  class Posting < Base
     property :id
     property :text
     property :state

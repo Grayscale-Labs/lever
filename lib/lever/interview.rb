@@ -1,5 +1,7 @@
+require 'lever/base'
+
 module Lever
-  class Interview < Base 
+  class Interview < Base
     property :id
     property :subject
     property :note

@@ -14,5 +14,6 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+    config.filter_run_when_matching :focus
   end
 end

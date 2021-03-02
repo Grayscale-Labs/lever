@@ -1,8 +1,8 @@
-
+require 'lever/base'
 
 module Lever
   class Application < Base
-    property :id 
+    property :id
     property :type
     property :candidate_id, from: :candidateId
     property :opportunity_id, from: :opportunityId
@@ -20,7 +20,7 @@ module Lever
     property :created_at, from: :createdAt
     property :archived
     property :requisition_for_hire, from: :requisitionForHire
-  
+
     def posting
       fetch('postings', posting_id)
     end
