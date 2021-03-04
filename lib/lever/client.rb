@@ -5,7 +5,7 @@ require 'lever/archive_reason'
 require 'lever/interview'
 require 'lever/opportunity_collection'
 require 'lever/posting'
-require 'lever/stage'
+require 'lever/stage_collection'
 require 'lever/user'
 
 require 'lever/error'
@@ -18,7 +18,8 @@ module Lever
     include HTTParty
 
     BASE_PATHS = {
-      opportunities: '/opportunities'
+      opportunities: '/opportunities',
+      stages:        '/stages'
     }
 
     attr_accessor :base_uri
@@ -42,7 +43,7 @@ module Lever
       get_resource('/users', Lever::User, id, { on_error: on_error })
     end
 
-    def opportunities(id: nil, contact_id: nil, on_error: nil, hydrate_for_collection: false, **query_params)
+    def opportunities(id: nil, contact_id: nil, on_error: nil, return_opportunity_collection: false, **query_params)
       # Here we're taking the first step in a larger journey to allow methods like this to return a `ResourceCollection`
       #
       # To start, we aim not to change current expected usage. The scenarios are:
@@ -50,11 +51,12 @@ module Lever
       # client.opportunities(contact_id: 123)           # returns an Array of Lever::Opportunity objects (unchanged)
       # client.opportunities(id: 456)                   # returns a Lever::Opportunity (unchanged)
       # client.opportunities(id: 456, contact_id: 123)  # returns a Lever::Opportunity (unchanged)
-      # client.opportunities(some: :param_val)          # returns a Lever::OpportunityCollection (this is new)
+      # client.opportunities(return_opportunity_collection: true) # returns a Lever::OpportunityCollection (this is new)
+      # client.opportunities(some: :param_val)                    # returns a Lever::OpportunityCollection (this is new)
       # client.opportunities(contact_id: 123, some: :param_val)           # contact_id will be added to query_params
       # client.opportunities(id: 456, on_error: [proc], some: :param_val) # raises an error (mixing old/new interfaces)
       #
-      if query_params.any?
+      if query_params.any? || return_opportunity_collection
         if [id, on_error].compact.any?
           raise Lever::Error, "`Lever::Client#opportunities`'s new interface for returning an OpportunityCollection "\
                               "does not allow for `id:` or `on_error:` keyword args"
@@ -82,8 +84,26 @@ module Lever
       get_resource("/opportunities/#{opportunity_id}/interviews", Lever::Interview, id)
     end
 
-    def stages(id: nil, on_error: nil)
-      get_resource('/stages', Lever::Stage, id, { on_error: on_error })
+    def stages(id: nil, on_error: nil, return_stage_collection: false, **query_params)
+      # Here we're taking the first step in a larger journey to allow methods like this to return a `ResourceCollection`
+      #
+      # To start, we aim not to change current expected usage. The scenarios are:
+      # client.stages                   # returns an Array of Lever::Stage objects (unchanged)
+      # client.stages(id: 123)          # returns a Lever::Stage (unchanged)
+      # client.stages(return_stage_collection: true) # returns a Lever::StageCollection (this is new)
+      # client.stages(some: :param_val)              # returns a Lever::StageCollection (this is new)
+      # client.opportunities(id: 123, on_error: [proc], some: :param_val) # raises an error (mixing old/new interfaces)
+      #
+      if query_params.any? || return_stage_collection
+        if [id, on_error].compact.any?
+          raise Lever::Error, "`Lever::Client#stages`'s new interface for returning a StageCollection "\
+                              "does not allow for `id:` or `on_error:` keyword args"
+        end
+
+        return Lever::StageCollection.new(client: self, query_params: query_params)
+      end
+
+      get_resource(BASE_PATHS[__method__], Lever::Stage, id, { on_error: on_error })
     end
 
     def postings(id: nil, on_error: nil)
