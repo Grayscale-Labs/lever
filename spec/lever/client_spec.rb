@@ -47,6 +47,73 @@ RSpec.describe Lever::Client do
         expect(client.stages(id: "1234")).to be_a(Lever::Stage)
       end
     end
+
+    context 'when given additional query_params' do
+      let(:limit) { 1 } # Use limit: 1 to limit data size + test pagination
+      let(:method_args) { { limit: limit } }
+
+      let!(:stage_responses) {
+        [
+          build(:lever_stage_responses_first_page, stub_request: true),
+          build(:lever_stage_responses_last_page,  stub_request: true)
+        ]
+      }
+
+      subject(:stages) { client.stages(method_args) }
+
+      it 'returns a response' do
+        expect(stages).to_not be_nil
+      end
+
+      it 'returns a StageCollection instance' do
+        expect(stages).to be_an_instance_of(Lever::StageCollection)
+      end
+
+      it 'returns stage details' do
+        expect(stages.first).to respond_to(:text)
+      end
+
+      it 'iterates by utilizing pagination' do
+        expect(
+          stages.first(limit * 2).map(&:id)
+        ).to(
+          eq(stage_responses.map { |r| r['data'].first['id'] })
+        )
+      end
+
+      context do
+        before(:each) do
+          allow(Lever::Client).to receive(:get).and_return(double('success?': false, headers: {}, code: code))
+        end
+
+        context 'when rate-limiting encountered' do
+          let(:code) { 429 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { stages.first }
+          end
+        end
+
+        context 'when 500 encountered' do
+          let(:code) { 500 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { stages.first }
+          end
+        end
+
+        context 'when 503 encountered' do
+          let(:code) { 503 }
+
+          it 'retries' do
+            expect(client).to(receive(:get_resource)).thrice.and_call_original
+            suppress(Lever::Error) { stages.first }
+          end
+        end
+      end
+    end
   end
 
   describe '#opportunities' do
@@ -73,7 +140,7 @@ RSpec.describe Lever::Client do
       end
     end
 
-    context 'when given additional query_params', :vcr do
+    context 'when given additional query_params' do
       let(:limit) { 1 } # Use limit: 1 to limit data size + test pagination
       let(:method_args) { { posting_id: 'space-explorer', limit: limit } }
 
