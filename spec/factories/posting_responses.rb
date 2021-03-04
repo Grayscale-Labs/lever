@@ -13,15 +13,14 @@ FactoryBot.define do
     user { "c895b832-820c-4f93-b873-23d5c8443acd" }
     owner { "c895b832-820c-4f93-b873-23d5c8443acd" }
     hiringManager { nil }
-    # categories {
-    #   {
-    #     "commitment": nil,
-    #     "department": nil,
-    #     "level": nil,
-    #     "location": "Atlanta, GA",
-    #     "team": "Engineering"
-    #   }
-    # }
+    categories do
+      {
+        "department": "DevOps",
+        "location": "Atlanta, GA",
+        "team": "Engineering"
+      }
+    end
+
     # "tags": [],
     # "content": {
     #   "description": "",
