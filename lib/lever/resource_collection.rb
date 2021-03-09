@@ -39,6 +39,8 @@ module Lever
         yield hydrated_resources[i]
         i += 1
       end
+
+      hydrated_resources
     end
 
     # Array#count is more efficient than Enum#count, so we want to utilize it if pagination has already been done to
