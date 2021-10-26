@@ -118,14 +118,16 @@ module Lever
       get_resource('/archive_reasons', Lever::ArchiveReason, nil, { on_error: on_error, query: { type: 'hired' } })
     end
 
-    def add_note(opportunity_id, body)
-      post_resource("/opportunities/#{opportunity_id}/notes", { value: body })
+    def add_note(opportunity_id, body, raise_http_errors: false)
+      post_resource("/opportunities/#{opportunity_id}/notes", { value: body }, raise_http_errors: raise_http_errors)
     end
 
-    def post_resource(path, body)
+    def post_resource(path, body, raise_http_errors: false)
       response = self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
 
-      if response.success?
+      # to preserve backward compatibilty, raising errors is disabled by default
+      # omit the optional raise_http_errors flag to retain the legacy behavior
+      if response.success? || !raise_http_errors
         response.parsed_response
       else
         error = case response.code
