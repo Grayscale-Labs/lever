@@ -125,7 +125,30 @@ module Lever
     def post_resource(path, body)
       response = self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
 
-      response.parsed_response
+      if response.success?
+        response.parsed_response
+      else
+        error = case response.code
+                when 400
+                  Lever::InvalidRequestError
+                when 401
+                  Lever::UnauthorizedError
+                when 403
+                  Lever::ForbiddenError
+                when 404
+                  Lever::NotFoundError
+                when 429
+                  Lever::TooManyRequestsError
+                when 500
+                  Lever::ServerError
+                when 503
+                  Lever::ServiceUnavailableError
+                else
+                  Lever::Error
+                end
+
+        raise error.new(response.code, response.code)
+      end
     end
 
     def with_retries
