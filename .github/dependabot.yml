@@ -1,10 +1,10 @@
-version: 2
-updates:
-- package-ecosystem: bundler
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-  assignees:
-  - etipton
-  - hcliu
+"updates":
+  "assignees":
+  - "etipton"
+  - "hcliu"
+  "directory": "/"
+  "open-pull-requests-limit": 5
+  "package-ecosystem": "bundler"
+  "schedule":
+    "interval": "daily"
+"version": 2
