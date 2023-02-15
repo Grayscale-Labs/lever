@@ -17,13 +17,14 @@ module Lever
   class ResourceCollection
     include Enumerable
 
-    attr_accessor :client, :query_params, :resource_class
+    attr_accessor :client, :query_params, :resource_class, :dehydrate_after_iteration
 
-    def initialize(client:, query_params: {}, resource_class:)
+    def initialize(client:, query_params: {}, resource_class:, dehydrate_after_iteration: true)
       self.client             = client
       self.query_params       = query_params
       self.resource_class     = resource_class # e.g. Lever::Opportunity
       self.hydrated_resources = []
+      self.dehydrate_after_iteration = dehydrate_after_iteration
     end
 
     def each
@@ -37,6 +38,7 @@ module Lever
         end
 
         yield hydrated_resources[i]
+        hydrated_resources[i] = :dehydrated if dehydrate_after_iteration
         i += 1
       end
 
