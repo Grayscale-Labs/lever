@@ -1,10 +1,9 @@
 "updates":
-- "assignees":
-  - "etipton"
-  - "hcliu"
-  "directory": "/"
+- "directory": "/"
   "open-pull-requests-limit": 5
   "package-ecosystem": "bundler"
+  "reviewers":
+  - "@grayscale-labs/dependabot_bundler"
   "schedule":
     "interval": "daily"
 "version": 2
