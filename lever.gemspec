@@ -34,10 +34,11 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency('activesupport')
   spec.add_runtime_dependency('hashie')
-  spec.add_runtime_dependency('httparty')
+  spec.add_runtime_dependency('httparty', '~> 0.21.0')
   spec.add_runtime_dependency('retriable')
+  spec.add_runtime_dependency('addressable', '~> 2.8.6')
 
-  spec.add_development_dependency "bundler", "~> 1.16"
+  spec.add_development_dependency "bundler", "~> 2.2.33"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "webmock"
