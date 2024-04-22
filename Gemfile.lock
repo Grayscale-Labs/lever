@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lever (0.2.7)
+    lever (0.2.8)
       activesupport
       addressable (~> 2.8.6)
       hashie
