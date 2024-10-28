@@ -1,5 +1,12 @@
 "updates":
 - "directory": "/"
+  "groups":
+    "development-dependencies":
+      "applies-to": "version-updates"
+      "dependency-type": "development"
+    "production-dependencies":
+      "applies-to": "version-updates"
+      "dependency-type": "production"
   "open-pull-requests-limit": 5
   "package-ecosystem": "bundler"
   "reviewers":
