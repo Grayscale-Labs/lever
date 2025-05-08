@@ -125,8 +125,8 @@ module Lever
     def post_resource(path, body, raise_http_errors: false)
       response = begin
         self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
-      rescue EOFError
-        raise Lever::ServiceUnavailableError
+      rescue EOFError => err
+        raise Lever::ServiceUnavailableError.new(err.message)
       end
 
       # to preserve backward compatibilty, raising errors is disabled by default
