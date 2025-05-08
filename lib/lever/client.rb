@@ -123,7 +123,11 @@ module Lever
     end
 
     def post_resource(path, body, raise_http_errors: false)
-      response = self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
+      response = begin
+        self.class.post("#{base_uri}#{path}", @options.merge({ body: body }))
+      rescue EOFError => err
+        raise Lever::ServiceUnavailableError.new(err.message)
+      end
 
       # to preserve backward compatibilty, raising errors is disabled by default
       # omit the optional raise_http_errors flag to retain the legacy behavior
@@ -176,7 +180,11 @@ module Lever
       add_query = options[:query]
       on_error = options[:on_error]
 
-      response = self.class.get("#{base_uri}#{path}", @options.merge(query: add_query))
+      response = begin
+        self.class.get("#{base_uri}#{path}", @options.merge(query: add_query))
+      rescue EOFError => err
+        raise Lever::ServiceUnavailableError.new(err.message)
+      end
       if response.success?
         parsed_response = response.parsed_response
 
