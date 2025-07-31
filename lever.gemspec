@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency('activesupport')
   spec.add_runtime_dependency('hashie')
-  spec.add_runtime_dependency('httparty', '~> 0.21.0')
+  spec.add_runtime_dependency('httparty', '>= 0.21', '< 0.23')
   spec.add_runtime_dependency('retriable')
   spec.add_runtime_dependency('addressable', '~> 2.8.6')
 
