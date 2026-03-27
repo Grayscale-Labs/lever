@@ -1,4 +1,6 @@
 # Lever
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FGrayscale-Labs%2Flever.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FGrayscale-Labs%2Flever?ref=badge_shield)
+
 
 Unoffical gem to access the [Lever](https://www.lever.co/) v1 API.
 
@@ -74,6 +76,9 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FGrayscale-Labs%2Flever.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FGrayscale-Labs%2Flever?ref=badge_large)
 
 ## Code of Conduct
 
